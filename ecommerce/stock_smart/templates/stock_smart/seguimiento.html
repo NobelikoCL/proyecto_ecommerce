@@ -1,0 +1,121 @@
+{% extends 'stock_smart/base.html' %}
+{% load static %}
+
+{% block title %}Seguimiento de Envío - Stock Smart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Seguimiento de Envío</h2>
+
+                    <!-- Formulario de búsqueda -->
+                    <form method="GET" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" 
+                                   name="numero" 
+                                   class="form-control form-control-lg" 
+                                   placeholder="Ingresa tu número de seguimiento"
+                                   value="{{ numero_seguimiento|default:'' }}"
+                                   required>
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-search"></i> Buscar
+                            </button>
+                        </div>
+                    </form>
+
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+
+                    {% if pedido %}
+                        <!-- Información del pedido -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">Pedido #{{ pedido.numero_seguimiento }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Fecha del pedido:</strong><br>
+                                        {{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Estado actual:</strong><br>
+                                        <span class="badge bg-primary">{{ pedido.get_estado_display }}</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Timeline de seguimiento -->
+                        <div class="timeline">
+                            {% for seguimiento in pedido.seguimientos.all %}
+                                <div class="timeline-item">
+                                    <div class="timeline-point"></div>
+                                    <div class="timeline-content">
+                                        <h6 class="mb-1">{{ seguimiento.get_estado_display }}</h6>
+                                        <p class="text-muted small mb-1">
+                                            {{ seguimiento.fecha|date:"d/m/Y H:i" }}
+                                            {% if seguimiento.ubicacion %}
+                                                - {{ seguimiento.ubicacion }}
+                                            {% endif %}
+                                        </p>
+                                        <p class="mb-0">{{ seguimiento.descripcion }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Timeline styles */
+.timeline {
+    position: relative;
+    padding: 20px 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 15px;
+    height: 100%;
+    width: 2px;
+    background: #e9ecef;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 40px;
+    margin-bottom: 30px;
+}
+
+.timeline-point {
+    position: absolute;
+    left: 11px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #0d6efd;
+    border: 2px solid #fff;
+}
+
+.timeline-content {
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+</style>
+{% endblock %}

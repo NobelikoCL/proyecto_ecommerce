@@ -1,0 +1,112 @@
+{% extends 'stock_smart/base.html' %}
+{% load static %}
+
+{% block title %}Términos y Condiciones - Stock Smart{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="text-center mb-5">Términos y Condiciones</h1>
+            
+            <!-- Última actualización -->
+            <p class="text-muted text-center mb-5">Última actualización: {% now "d/m/Y" %}</p>
+
+            <!-- Introducción -->
+            <section class="mb-5">
+                <h2>1. Introducción</h2>
+                <p>Bienvenido a Stock Smart. Al acceder y utilizar esta plataforma, usted acepta estos términos y condiciones en su totalidad. Si no está de acuerdo con estos términos y condiciones o alguna parte de estos, no debe utilizar este sitio web.</p>
+            </section>
+
+            <!-- Definiciones -->
+            <section class="mb-5">
+                <h2>2. Definiciones</h2>
+                <ul>
+                    <li><strong>"Usuario"</strong>: cualquier persona que acceda o utilice la plataforma Stock Smart.</li>
+                    <li><strong>"Vendedor"</strong>: usuario registrado que ofrece productos para la venta en la plataforma.</li>
+                    <li><strong>"Comprador"</strong>: usuario que adquiere productos a través de la plataforma.</li>
+                    <li><strong>"Plataforma"</strong>: el sitio web y servicios ofrecidos por Stock Smart.</li>
+                </ul>
+            </section>
+
+            <!-- Cuenta de Usuario -->
+            <section class="mb-5">
+                <h2>3. Cuenta de Usuario</h2>
+                <h3>3.1. Registro</h3>
+                <p>Para utilizar ciertas funciones de la plataforma, debe registrarse y crear una cuenta. Usted se compromete a:</p>
+                <ul>
+                    <li>Proporcionar información precisa y completa</li>
+                    <li>Mantener actualizada su información</li>
+                    <li>Mantener la seguridad de su cuenta y contraseña</li>
+                    <li>No crear cuentas múltiples o falsas</li>
+                </ul>
+
+                <h3>3.2. Responsabilidades</h3>
+                <p>Usted es responsable de todas las actividades que ocurran bajo su cuenta. Debe notificar inmediatamente cualquier uso no autorizado de su cuenta.</p>
+            </section>
+
+            <!-- Compras y Ventas -->
+            <section class="mb-5">
+                <h2>4. Compras y Ventas</h2>
+                <h3>4.1. Proceso de Compra</h3>
+                <p>Al realizar una compra en la plataforma:</p>
+                <ul>
+                    <li>Se compromete a pagar el precio establecido</li>
+                    <li>Debe proporcionar información de envío precisa</li>
+                    <li>Acepta los términos de envío y devolución</li>
+                </ul>
+
+                <h3>4.2. Proceso de Venta</h3>
+                <p>Los vendedores se comprometen a:</p>
+                <ul>
+                    <li>Describir con precisión los productos ofrecidos</li>
+                    <li>Mantener actualizado el inventario</li>
+                    <li>Cumplir con los tiempos de envío establecidos</li>
+                    <li>Respetar las políticas de devolución</li>
+                </ul>
+            </section>
+
+            <!-- Pagos y Comisiones -->
+            <section class="mb-5">
+                <h2>5. Pagos y Comisiones</h2>
+                <p>Stock Smart cobra una comisión del 5% sobre cada venta realizada en la plataforma. Los pagos se procesan a través de nuestros proveedores de servicios de pago autorizados.</p>
+            </section>
+
+            <!-- Propiedad Intelectual -->
+            <section class="mb-5">
+                <h2>6. Propiedad Intelectual</h2>
+                <p>Todo el contenido presente en la plataforma, incluyendo pero no limitado a textos, gráficos, logos, imágenes, clips de audio, descargas digitales y compilaciones de datos, es propiedad de Stock Smart o sus proveedores de contenido y está protegido por las leyes de propiedad intelectual.</p>
+            </section>
+
+            <!-- Privacidad -->
+            <section class="mb-5">
+                <h2>7. Privacidad</h2>
+                <p>El uso de la información personal se rige por nuestra <a href="{% url 'stock_smart:privacidad' %}">Política de Privacidad</a>, que forma parte integral de estos términos y condiciones.</p>
+            </section>
+
+            <!-- Limitación de Responsabilidad -->
+            <section class="mb-5">
+                <h2>8. Limitación de Responsabilidad</h2>
+                <p>Stock Smart no será responsable por daños indirectos, incidentales, especiales o consecuentes que resulten del uso o la imposibilidad de usar nuestros servicios.</p>
+            </section>
+
+            <!-- Modificaciones -->
+            <section class="mb-5">
+                <h2>9. Modificaciones</h2>
+                <p>Stock Smart se reserva el derecho de modificar estos términos y condiciones en cualquier momento. Los cambios entrarán en vigor inmediatamente después de su publicación en la plataforma.</p>
+            </section>
+
+            <!-- Contacto -->
+            <section class="mb-5">
+                <h2>10. Contacto</h2>
+                <p>Si tiene alguna pregunta sobre estos términos y condiciones, puede contactarnos a:</p>
+                <ul>
+                    <li>Email: legal@stocksmart.cl</li>
+                    <li>Teléfono: +56 9 1234 5678</li>
+                    <li>Dirección: Santiago, Chile</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

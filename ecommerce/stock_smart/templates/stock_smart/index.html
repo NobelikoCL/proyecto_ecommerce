@@ -1,162 +1,33 @@
 {% extends 'stock_smart/base.html' %}
-{% load static %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section bg-primary text-white py-5">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-4">Tu Marketplace de Confianza</h1>
-                <p class="lead mb-4">Compra y vende productos de calidad en la plataforma más segura del mercado.</p>
-                {% if not user.is_authenticated %}
-                    <div class="d-grid gap-2 d-md-flex">
-                        <a href="{% url 'stock_smart:register' %}" class="btn btn-light btn-lg px-4">
-                            Crea tu cuenta
-                        </a>
-                        <a href="{% url 'stock_smart:login' %}" class="btn btn-outline-light btn-lg px-4">
-                            Iniciar sesión
-                        </a>
+<section class="super-ofertas">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Súper Ofertas</h2>
+        <div class="countdown"></div>
+    </div>
+    
+    <div class="row">
+        {% for producto in productos_oferta %}
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                {% if producto.imagen and producto.imagen.url %}
+                    <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
+                {% else %}
+                    <div class="card-img-top bg-light text-center py-4">
+                        <span class="text-muted">Sin imagen disponible</span>
                     </div>
                 {% endif %}
-            </div>
-            <div class="col-lg-6">
-                <!-- Aquí puedes agregar una imagen representativa -->
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Categorías Destacadas -->
-<section class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-4">Categorías Destacadas</h2>
-        <div class="row g-4">
-            <!-- Categoría 1 -->
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="bi bi-laptop display-4 text-primary mb-3"></i>
-                        <h3 class="h5">Tecnología</h3>
-                        <p class="text-muted">Encuentra los últimos gadgets y dispositivos.</p>
-                        <a href="#" class="btn btn-outline-primary">Ver productos</a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Categoría 2 -->
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="bi bi-house-door display-4 text-primary mb-3"></i>
-                        <h3 class="h5">Hogar</h3>
-                        <p class="text-muted">Todo para tu casa y decoración.</p>
-                        <a href="#" class="btn btn-outline-primary">Ver productos</a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Categoría 3 -->
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="bi bi-bag display-4 text-primary mb-3"></i>
-                        <h3 class="h5">Moda</h3>
-                        <p class="text-muted">Las últimas tendencias en ropa y accesorios.</p>
-                        <a href="#" class="btn btn-outline-primary">Ver productos</a>
-                    </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ producto.nombre }}</h5>
+                    <p class="card-text">
+                        <span class="text-decoration-line-through">${{ producto.precio }}</span>
+                        <span class="text-danger">${{ producto.precio_oferta }}</span>
+                    </p>
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
 </section>
-
-<!-- Características -->
-<section class="bg-light py-5">
-    <div class="container">
-        <div class="row g-4">
-            <!-- Característica 1 -->
-            <div class="col-md-3">
-                <div class="text-center">
-                    <i class="bi bi-shield-check display-4 text-primary mb-3"></i>
-                    <h4 class="h5">Compra Segura</h4>
-                    <p class="text-muted small">Transacciones protegidas</p>
-                </div>
-            </div>
-            
-            <!-- Característica 2 -->
-            <div class="col-md-3">
-                <div class="text-center">
-                    <i class="bi bi-truck display-4 text-primary mb-3"></i>
-                    <h4 class="h5">Envío Rápido</h4>
-                    <p class="text-muted small">Entrega en todo Chile</p>
-                </div>
-            </div>
-            
-            <!-- Característica 3 -->
-            <div class="col-md-3">
-                <div class="text-center">
-                    <i class="bi bi-arrow-return-left display-4 text-primary mb-3"></i>
-                    <h4 class="h5">Devolución Gratis</h4>
-                    <p class="text-muted small">Hasta 10 días después</p>
-                </div>
-            </div>
-            
-            <!-- Característica 4 -->
-            <div class="col-md-3">
-                <div class="text-center">
-                    <i class="bi bi-headset display-4 text-primary mb-3"></i>
-                    <h4 class="h5">Soporte 24/7</h4>
-                    <p class="text-muted small">Siempre disponibles</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- CSS específico para la página de inicio -->
-<style>
-.hero-section {
-    background: linear-gradient(45deg, #0d6efd, #0a58ca);
-    min-height: 500px;
-    display: flex;
-    align-items: center;
-}
-
-.card {
-    transition: transform 0.2s;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-}
-
-.display-4 {
-    font-size: 3.5rem;
-    font-weight: 700;
-}
-
-.lead {
-    font-size: 1.25rem;
-}
-
-.btn-lg {
-    padding: 1rem 2rem;
-}
-
-@media (max-width: 768px) {
-    .hero-section {
-        min-height: 400px;
-        text-align: center;
-    }
-    
-    .display-4 {
-        font-size: 2.5rem;
-    }
-    
-    .lead {
-        font-size: 1.1rem;
-    }
-}
-</style>
 {% endblock %}

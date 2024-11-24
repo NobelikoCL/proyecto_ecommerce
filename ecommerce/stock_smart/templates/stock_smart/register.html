@@ -3,67 +3,65 @@
 {% block title %}Registro - Stock Smart{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm mt-5">
-                <div class="card-body p-4">
-                    <h2 class="text-center mb-4">Crea tu cuenta</h2>
-                    
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">Crear Cuenta</h2>
+
                     {% if messages %}
                         {% for message in messages %}
-                            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show">
+                            <div class="alert alert-{{ message.tags }}">
                                 {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
                         {% endfor %}
                     {% endif %}
-                    
-                    <form method="POST">
+
+                    <form method="post" action="{% url 'register' %}">
                         {% csrf_token %}
                         
-                        <!-- Email -->
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Agrega tu e-mail</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <div class="text-danger">
+                                        {{ field.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
 
-                        <!-- Nombre -->
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label">Elige tu nombre</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" required>
-                        </div>
-
-                        <!-- Teléfono -->
-                        <div class="mb-3">
-                            <label for="telefono" class="form-label">Valida tu teléfono</label>
-                            <input type="tel" class="form-control" id="telefono" name="telefono" required>
-                        </div>
-
-                        <!-- Contraseña -->
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Crear contraseña</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-
-                        <!-- Confirmar Contraseña -->
-                        <div class="mb-3">
-                            <label for="confirm_password" class="form-label">Confirma tu contraseña</label>
-                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-                        </div>
-
-                        <!-- Botón de registro -->
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">Crear cuenta</button>
+                            <button type="submit" class="btn btn-primary">Registrarse</button>
                         </div>
                     </form>
 
-                    <div class="text-center mt-3">
-                        <p>¿Ya tienes una cuenta? <a href="{% url 'stock_smart:login' %}">Inicia sesión</a></p>
+                    <div class="text-center mt-4">
+                        <p>¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia sesión</a></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.form-control {
+    padding: 0.75rem;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.btn-primary {
+    padding: 0.75rem;
+}
+</style>
 {% endblock %}

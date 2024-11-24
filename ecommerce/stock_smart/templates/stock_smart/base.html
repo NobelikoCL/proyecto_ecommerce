@@ -1,186 +1,273 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Stock Smart{% endblock %}</title>
+    
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <!-- CSS personalizado -->
-    <link rel="stylesheet" href="{% static 'stock_smart/css/style.css' %}">
-    {% block extra_css %}{% endblock %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        .top-banner {
+            background-color: #4000ff;
+            color: white;
+            padding: 5px 0;
+        }
+        
+        .header-main {
+            padding: 15px 0;
+        }
+        
+        .nav-categories {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        
+        .promo-banner {
+            background-color: #f8f9fa;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .promo-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .countdown {
+            background-color: #000;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .btn-sm {
+            margin-left: 0.5rem;
+        }
+
+        .bi {
+            margin-right: 0.3rem;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+        }
+
+        .navbar-brand img {
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover img {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .navbar-brand img {
+                height: 30px;
+            }
+        }
+    </style>
 </head>
-<body>
-    <!-- Top Bar -->
-    <div class="top-bar bg-primary text-white py-2">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 small">
-                    <span class="me-3"><i class="bi bi-envelope"></i> contacto@stocksmart.cl</span>
-                    <span><i class="bi bi-telephone"></i> +56 9 1234 5678</span>
-                </div>
-                <div class="col-md-6 text-end small">
-                    <a href="{% url 'stock_smart:seguimiento_envio' %}" class="text-white me-3">
-                        <i class="bi bi-truck"></i> Seguimiento de envíos
-                    </a>
-                    <a href="{% url 'stock_smart:ayuda' %}" class="text-white">
-                        <i class="bi bi-info-circle"></i> Centro de ayuda
-                    </a>
-                </div>
-            </div>
+<body class="d-flex flex-column h-100">
+    <!-- Banner Superior -->
+    <div class="top-banner">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div>ENVÍO GRATIS desde $9.990</div>
+            <div>20% DCTO. DESDE $0 *solo para nuevos usuarios</div>
         </div>
     </div>
 
-    <!-- Main Header -->
-    <header class="main-header py-3 border-bottom">
+    <!-- Header Principal -->
+    <header class="header-main">
         <div class="container">
             <div class="row align-items-center">
-                <!-- Logo -->
-                <div class="col-lg-2 col-md-3 col-6">
-                    <a class="navbar-brand" href="{% url 'stock_smart:index' %}">
-                        <img src="{% static 'stock_smart/img/logo.png' %}" alt="Stock Smart" height="40">
-                    </a>
+                <div class="col-2">
+                    <a href="/" class="logo">STOCK SMART</a>
                 </div>
-
-                <!-- Buscador -->
-                <div class="col-lg-5 col-md-4 d-none d-md-block">
-                    <form class="search-form">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="¿Qué estás buscando?">
-                            <button class="btn btn-primary" type="submit">
-                                <i class="bi bi-search"></i>
-                            </button>
-                        </div>
+                <div class="col-8">
+                    <form class="d-flex">
+                        <input type="search" class="form-control" placeholder="🔍 Buscar">
+                        <button class="btn btn-dark ms-2">Buscar</button>
                     </form>
                 </div>
-
-                <!-- Iconos de acción -->
-                <div class="col-lg-5 col-md-5 col-6">
-                    <div class="d-flex justify-content-end align-items-center">
-                        <!-- Botón de búsqueda móvil -->
-                        <button class="btn btn-link text-dark d-md-none me-3" type="button" data-bs-toggle="collapse" data-bs-target="#searchCollapse">
-                            <i class="bi bi-search fs-5"></i>
-                        </button>
-
-                        <!-- Favoritos -->
-                        <a href="#" class="btn btn-link text-dark position-relative me-3">
-                            <i class="bi bi-heart fs-5"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                2
-                            </span>
-                        </a>
-
-                        <!-- Carrito -->
-                        <a href="#" class="btn btn-link text-dark position-relative me-3">
-                            <i class="bi bi-cart3 fs-5"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                3
-                            </span>
-                        </a>
-
-                        <!-- Menú de usuario -->
-                        {% if user.is_authenticated %}
-                            <div class="dropdown">
-                                <button class="btn btn-link text-dark dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown">
-                                    <i class="bi bi-person-circle fs-5 me-2"></i>
-                                    <span class="d-none d-md-inline">{{ user.first_name|default:user.email }}</span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    {% if user.is_vendedor %}
-                                        <li><a class="dropdown-item" href="#"><i class="bi bi-shop me-2"></i>Mi Tienda</a></li>
-                                        <li><a class="dropdown-item" href="#"><i class="bi bi-box-seam me-2"></i>Mis Productos</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                    {% endif %}
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-cart-check me-2"></i>Mis Pedidos</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="bi bi-heart me-2"></i>Favoritos</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item text-danger" href="{% url 'stock_smart:logout' %}">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión
-                                    </a></li>
-                                </ul>
-                            </div>
-                        {% else %}
-                            <div class="d-flex">
-                                <a href="{% url 'stock_smart:login' %}" class="btn btn-outline-primary me-2">Iniciar Sesión</a>
-                                <a href="{% url 'stock_smart:register' %}" class="btn btn-primary">Registrarse</a>
-                            </div>
-                        {% endif %}
+                <div class="col-2">
+                    <div class="d-flex justify-content-end gap-3">
+                        <a href="/cuenta"><i class="bi bi-person"></i></a>
+                        <a href="/carrito"><i class="bi bi-cart"></i></a>
+                        <a href="/favoritos"><i class="bi bi-heart"></i></a>
                     </div>
                 </div>
-            </div>
-
-            <!-- Buscador móvil colapsable -->
-            <div class="collapse mt-3 d-md-none" id="searchCollapse">
-                <form class="search-form">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="¿Qué estás buscando?">
-                        <button class="btn btn-primary" type="submit">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
     </header>
 
-    <!-- Navbar de Categorías -->
+    <!-- Navegación Categorías -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCategories">
+            <!-- Logo con ícono y nombre -->
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'stock_smart:index' %}">
+                <i class="bi bi-box-seam text-primary me-2" style="font-size: 1.5rem;"></i>
+                <span class="fw-bold">STOCK SMART</span>
+            </a>
+
+            <!-- Botón hamburguesa para móviles -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarCategories">
-                <ul class="navbar-nav">
+
+            <!-- Contenido del navbar -->
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto">
+                    <!-- Inicio -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'stock_smart:index' %}">
+                            <i class="bi bi-house-door"></i>
+                        </a>
+                    </li>
+
+                    <!-- Categorías -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarCategorias" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-grid"></i> Categorías
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Electrónicos</a></li>
-                            <li><a class="dropdown-item" href="#">Moda</a></li>
-                            <li><a class="dropdown-item" href="#">Hogar</a></li>
-                            <li><a class="dropdown-item" href="#">Deportes</a></li>
+                        <ul class="dropdown-menu dropdown-menu-large" aria-labelledby="navbarCategorias">
+                            <div class="container">
+                                <div class="row">
+                                    {% for categoria in categorias_menu %}
+                                    <div class="col-md-4 mb-3">
+                                        <h6 class="dropdown-header">{{ categoria.nombre }}</h6>
+                                        {% for subcategoria in categoria.subcategoria_set.all %}
+                                            <li>
+                                                <a class="dropdown-item" href="{% url 'stock_smart:categoria_detalle' categoria.slug %}?subcategoria={{ subcategoria.slug }}">
+                                                    {{ subcategoria.nombre }}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item text-primary" href="{% url 'stock_smart:categoria_detalle' categoria.slug %}">
+                                                Ver todo en {{ categoria.nombre }} <i class="bi bi-arrow-right"></i>
+                                            </a>
+                                        </li>
+                                    </div>
+                                    {% if forloop.counter|divisibleby:3 %}
+                                        </div><div class="row">
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
                         </ul>
                     </li>
+
+                    <!-- Ofertas -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Ofertas</a>
+                        <a class="nav-link" href="{% url 'stock_smart:ofertas' %}">
+                            <i class="bi bi-tag"></i> Ofertas
+                        </a>
                     </li>
+                </ul>
+
+                <!-- Buscador -->
+                <form class="d-flex mx-auto" method="GET" action="{% url 'stock_smart:buscar' %}">
+                    <div class="input-group">
+                        <input class="form-control" type="search" name="q" 
+                               placeholder="Buscar productos..." 
+                               aria-label="Buscar" 
+                               value="{{ request.GET.q }}">
+                        <button class="btn btn-outline-primary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Iconos de usuario y carrito -->
+                <ul class="navbar-nav ms-auto">
+                    <!-- ... tu código existente para el dropdown de usuario ... -->
+                    
+                    <!-- Carrito -->
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Más Vendidos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Nuevos Productos</a>
+                        <a class="nav-link" href="{% url 'stock_smart:carrito' %}">
+                            <i class="bi bi-cart3"></i>
+                            {% if cart_count %}
+                                <span class="badge bg-primary rounded-pill">{{ cart_count }}</span>
+                            {% endif %}
+                        </a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Mensajes -->
-    {% if messages %}
-        <div class="container mt-3">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <!-- Banners Promocionales -->
+    <div class="promo-banner">
+        <div class="container">
+            <div class="row">
+                <div class="col-3 promo-item">
+                    <i class="bi bi-box"></i>
+                    <span>Centro de Prueba Gratuita</span>
                 </div>
-            {% endfor %}
+                <div class="col-3 promo-item">
+                    <i class="bi bi-phone"></i>
+                    <span>15% Dcto. Solo En App</span>
+                </div>
+                <div class="col-3 promo-item">
+                    <i class="bi bi-arrow-return-left"></i>
+                    <span>DEVOLUCIÓN GRATIS</span>
+                </div>
+                <div class="col-3 promo-item">
+                    <i class="bi bi-whatsapp"></i>
+                    <span>Suscríbete en WhatsApp</span>
+                </div>
+            </div>
         </div>
-    {% endif %}
+    </div>
 
-    <!-- Contenido principal -->
-    {% block content %}{% endblock %}
+    <!-- Contenido Principal -->
+    <main class="flex-shrink-0">
+        {% block content %}{% endblock %}
+    </main>
 
     <!-- Footer -->
     {% include 'stock_smart/includes/footer.html' %}
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    {% block extra_js %}{% endblock %}
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Contador de 24 horas
+        function updateCountdown() {
+            const now = new Date();
+            const end = new Date();
+            end.setHours(23, 59, 59, 999);
+            
+            const diff = end - now;
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.querySelectorAll('.countdown').forEach(el => {
+                el.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            });
+        }
+        
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
 </body>
 </html>

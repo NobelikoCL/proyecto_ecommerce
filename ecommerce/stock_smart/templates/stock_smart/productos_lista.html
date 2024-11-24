@@ -1,0 +1,52 @@
+{% extends 'stock_smart/base.html' %}
+
+{% block title %}{{ titulo }} - Stock Smart{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h1 class="mb-4">{{ titulo }}</h1>
+    {% if descripcion %}
+        <p class="lead mb-4">{{ descripcion }}</p>
+    {% endif %}
+
+    {% if productos %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            {% for producto in productos %}
+            <div class="col">
+                <div class="card h-100">
+                    {% if producto.imagen %}
+                        <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}">
+                    {% else %}
+                        <img src="{% static 'img/no-image.png' %}" class="card-img-top" alt="Sin imagen">
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ producto.nombre }}</h5>
+                        
+                        {% if producto.precio_oferta %}
+                            <p class="card-text">
+                                <span class="text-danger h5">${{ producto.precio_oferta|floatformat:0 }}</span>
+                                <small class="text-muted text-decoration-line-through">${{ producto.precio|floatformat:0 }}</small>
+                            </p>
+                        {% else %}
+                            <p class="card-text h5">${{ producto.precio|floatformat:0 }}</p>
+                        {% endif %}
+                        
+                        <a href="{% url 'stock_smart:producto_detalle' producto.slug %}" 
+                           class="btn btn-primary">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            {% if query %}
+                No se encontraron productos que coincidan con "{{ query }}"
+            {% else %}
+                No hay productos disponibles en este momento
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

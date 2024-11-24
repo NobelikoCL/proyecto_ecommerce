@@ -1,121 +1,131 @@
 {% extends 'stock_smart/base.html' %}
-{% load static %}
 
 {% block title %}Seguimiento de Envío - Stock Smart{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card shadow">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Seguimiento de Envío</h4>
+                </div>
                 <div class="card-body">
-                    <h2 class="card-title text-center mb-4">Seguimiento de Envío</h2>
-
-                    <!-- Formulario de búsqueda -->
-                    <form method="GET" class="mb-4">
+                    <form method="POST" class="mb-4">
+                        {% csrf_token %}
                         <div class="input-group">
                             <input type="text" 
-                                   name="numero" 
-                                   class="form-control form-control-lg" 
-                                   placeholder="Ingresa tu número de seguimiento"
-                                   value="{{ numero_seguimiento|default:'' }}"
+                                   name="numero_seguimiento" 
+                                   class="form-control" 
+                                   placeholder="Ingrese número de seguimiento"
                                    required>
-                            <button class="btn btn-primary" type="submit">
-                                <i class="bi bi-search"></i> Buscar
+                            <button type="submit" class="btn btn-primary">
+                                Buscar
                             </button>
                         </div>
                     </form>
 
-                    {% if error %}
-                        <div class="alert alert-danger">
-                            {{ error }}
-                        </div>
-                    {% endif %}
-
-                    {% if pedido %}
-                        <!-- Información del pedido -->
-                        <div class="card mb-4">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0">Pedido #{{ pedido.numero_seguimiento }}</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p><strong>Fecha del pedido:</strong><br>
-                                        {{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong>Estado actual:</strong><br>
-                                        <span class="badge bg-primary">{{ pedido.get_estado_display }}</span></p>
+                    {% if numero_seguimiento %}
+                        <div class="tracking-result">
+                            <h5>Resultado de la búsqueda</h5>
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <p><strong>Número de seguimiento:</strong> {{ numero_seguimiento }}</p>
+                                    <p><strong>Estado:</strong> 
+                                        <span class="badge bg-info">{{ estado }}</span>
+                                    </p>
+                                    
+                                    <!-- Timeline de seguimiento -->
+                                    <div class="timeline mt-4">
+                                        <div class="timeline-item">
+                                            <div class="timeline-marker bg-success"></div>
+                                            <div class="timeline-content">
+                                                <h6>Pedido recibido</h6>
+                                                <small class="text-muted">Fecha: {% now "d/m/Y" %}</small>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-marker"></div>
+                                            <div class="timeline-content">
+                                                <h6>En preparación</h6>
+                                                <small class="text-muted">Procesando pedido</small>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-marker"></div>
+                                            <div class="timeline-content">
+                                                <h6>En camino</h6>
+                                                <small class="text-muted">Pendiente</small>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-marker"></div>
+                                            <div class="timeline-content">
+                                                <h6>Entregado</h6>
+                                                <small class="text-muted">Pendiente</small>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Timeline de seguimiento -->
-                        <div class="timeline">
-                            {% for seguimiento in pedido.seguimientos.all %}
-                                <div class="timeline-item">
-                                    <div class="timeline-point"></div>
-                                    <div class="timeline-content">
-                                        <h6 class="mb-1">{{ seguimiento.get_estado_display }}</h6>
-                                        <p class="text-muted small mb-1">
-                                            {{ seguimiento.fecha|date:"d/m/Y H:i" }}
-                                            {% if seguimiento.ubicacion %}
-                                                - {{ seguimiento.ubicacion }}
-                                            {% endif %}
-                                        </p>
-                                        <p class="mb-0">{{ seguimiento.descripcion }}</p>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
                     {% endif %}
+                </div>
+            </div>
+
+            <!-- Información adicional -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5>Información importante</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-info-circle"></i> El seguimiento puede tardar hasta 24 horas en actualizarse.</li>
+                        <li><i class="bi bi-clock"></i> Los tiempos de entrega son estimados.</li>
+                        <li><i class="bi bi-question-circle"></i> Para consultas adicionales, contacte a nuestro servicio al cliente.</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block extra_css %}
 <style>
-/* Timeline styles */
 .timeline {
     position: relative;
     padding: 20px 0;
 }
 
-.timeline::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 15px;
-    height: 100%;
-    width: 2px;
-    background: #e9ecef;
-}
-
 .timeline-item {
     position: relative;
     padding-left: 40px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
-.timeline-point {
+.timeline-marker {
     position: absolute;
-    left: 11px;
-    width: 10px;
-    height: 10px;
+    left: 0;
+    top: 0;
+    width: 15px;
+    height: 15px;
     border-radius: 50%;
-    background: #0d6efd;
+    background: #dee2e6;
     border: 2px solid #fff;
+    box-shadow: 0 0 0 2px #dee2e6;
+}
+
+.timeline-marker.bg-success {
+    background: #28a745;
+    box-shadow: 0 0 0 2px #28a745;
 }
 
 .timeline-content {
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 4px;
+    padding-bottom: 20px;
+    border-left: 2px solid #dee2e6;
+    padding-left: 20px;
+    margin-left: -2px;
+}
+
+.timeline-item:last-child .timeline-content {
+    border-left: none;
 }
 </style>
 {% endblock %}

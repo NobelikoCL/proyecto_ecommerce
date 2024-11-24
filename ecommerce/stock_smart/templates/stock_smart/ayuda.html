@@ -4,200 +4,116 @@
 {% block title %}Centro de Ayuda - Stock Smart{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <!-- Encabezado -->
+<div class="container my-5">
+    <h1 class="mb-4">Centro de Ayuda</h1>
+
+    <!-- Buscador de ayuda -->
+    <div class="search-box mb-5">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="¿Qué necesitas saber?">
+            <button class="btn btn-primary" type="button">Buscar</button>
+        </div>
+    </div>
+
+    <!-- Secciones principales de ayuda -->
     <div class="row mb-5">
-        <div class="col-lg-8 mx-auto text-center">
-            <h1 class="mb-3">Centro de Ayuda</h1>
-            <p class="lead">Encuentra respuestas rápidas a las preguntas más frecuentes</p>
-            
-            <!-- Buscador -->
-            <div class="search-box mt-4">
-                <div class="input-group">
-                    <input type="text" id="searchHelp" class="form-control form-control-lg" placeholder="¿Qué necesitas saber?">
-                    <button class="btn btn-primary" type="button">
-                        <i class="bi bi-search"></i> Buscar
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-cart"></i> Compras</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-decoration-none">¿Cómo comprar?</a></li>
+                        <li><a href="#" class="text-decoration-none">Métodos de pago</a></li>
+                        <li><a href="#" class="text-decoration-none">Estado de mi pedido</a></li>
+                        <li><a href="#" class="text-decoration-none">Cancelar una compra</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-truck"></i> Envíos</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-decoration-none">Costos de envío</a></li>
+                        <li><a href="#" class="text-decoration-none">Tiempos de entrega</a></li>
+                        <li><a href="#" class="text-decoration-none">Seguimiento de pedido</a></li>
+                        <li><a href="#" class="text-decoration-none">Zonas de cobertura</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-arrow-return-left"></i> Devoluciones</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-decoration-none">Política de devoluciones</a></li>
+                        <li><a href="#" class="text-decoration-none">Proceso de devolución</a></li>
+                        <li><a href="#" class="text-decoration-none">Estado de mi devolución</a></li>
+                        <li><a href="#" class="text-decoration-none">Reembolsos</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preguntas frecuentes -->
+    <div class="faq-section">
+        <h2 class="mb-4">Preguntas Frecuentes</h2>
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                        ¿Cuáles son los métodos de pago aceptados?
                     </button>
+                </h2>
+                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Aceptamos múltiples métodos de pago incluyendo tarjetas de crédito, débito, transferencia bancaria y WebPay.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                        ¿Cuánto tiempo tarda el envío?
+                    </button>
+                </h2>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Los tiempos de envío varían según tu ubicación. Generalmente, el tiempo de entrega es de 2-5 días hábiles.
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                        ¿Cómo puedo hacer una devolución?
+                    </button>
+                </h2>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        Para realizar una devolución, contacta a nuestro servicio al cliente dentro de los 10 días posteriores a la recepción del producto.
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Categorías principales -->
-    <div class="row mb-5">
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body text-center p-4">
-                    <i class="bi bi-cart3 display-4 text-primary mb-3"></i>
-                    <h3 class="h5 mb-3">Compras</h3>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#compras-proceso">Proceso de compra</a></li>
-                        <li class="mb-2"><a href="#compras-pago">Métodos de pago</a></li>
-                        <li class="mb-2"><a href="#compras-cancelar">Cancelar una compra</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body text-center p-4">
-                    <i class="bi bi-truck display-4 text-primary mb-3"></i>
-                    <h3 class="h5 mb-3">Envíos</h3>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#envios-tiempo">Tiempos de entrega</a></li>
-                        <li class="mb-2"><a href="#envios-seguimiento">Seguimiento de pedido</a></li>
-                        <li class="mb-2"><a href="#envios-costos">Costos de envío</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body text-center p-4">
-                    <i class="bi bi-arrow-return-left display-4 text-primary mb-3"></i>
-                    <h3 class="h5 mb-3">Devoluciones</h3>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#devoluciones-proceso">Proceso de devolución</a></li>
-                        <li class="mb-2"><a href="#devoluciones-plazo">Plazos</a></li>
-                        <li class="mb-2"><a href="#devoluciones-reembolso">Reembolsos</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Contenido detallado -->
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <!-- Compras -->
-            <section id="compras" class="mb-5">
-                <h2 class="border-bottom pb-2">Compras</h2>
-                
-                <div id="compras-proceso" class="mb-4">
-                    <h3>Proceso de compra</h3>
-                    <ol>
-                        <li>Selecciona los productos que deseas comprar</li>
-                        <li>Agrega los productos al carrito</li>
-                        <li>Revisa tu carrito y procede al pago</li>
-                        <li>Ingresa la dirección de envío</li>
-                        <li>Selecciona el método de pago</li>
-                        <li>Confirma tu compra</li>
-                    </ol>
-                </div>
-
-                <div id="compras-pago" class="mb-4">
-                    <h3>Métodos de pago</h3>
-                    <ul>
-                        <li>Tarjetas de crédito/débito</li>
-                        <li>Transferencia bancaria</li>
-                        <li>WebPay</li>
-                        <li>PayPal</li>
-                    </ul>
-                </div>
-
-                <div id="compras-cancelar" class="mb-4">
-                    <h3>Cancelar una compra</h3>
-                    <p>Puedes cancelar tu compra:</p>
-                    <ul>
-                        <li>Inmediatamente después de la compra</li>
-                        <li>Antes de que el pedido sea enviado</li>
-                        <li>Contactando a servicio al cliente</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Envíos -->
-            <section id="envios" class="mb-5">
-                <h2 class="border-bottom pb-2">Envíos</h2>
-                
-                <div id="envios-tiempo" class="mb-4">
-                    <h3>Tiempos de entrega</h3>
-                    <ul>
-                        <li>Santiago: 1-2 días hábiles</li>
-                        <li>Regiones: 2-5 días hábiles</li>
-                        <li>Zonas extremas: 5-7 días hábiles</li>
-                    </ul>
-                </div>
-
-                <div id="envios-seguimiento" class="mb-4">
-                    <h3>Seguimiento de pedido</h3>
-                    <p>Para seguir tu pedido:</p>
-                    <ol>
-                        <li>Ingresa a "Seguimiento de envíos"</li>
-                        <li>Introduce tu número de seguimiento</li>
-                        <li>Visualiza el estado actual de tu pedido</li>
-                    </ol>
-                </div>
-
-                <div id="envios-costos" class="mb-4">
-                    <h3>Costos de envío</h3>
-                    <ul>
-                        <li>Santiago: $3.990</li>
-                        <li>Regiones: $5.990</li>
-                        <li>Zonas extremas: $7.990</li>
-                        <li>Envío gratis en compras sobre $50.000</li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- Devoluciones -->
-            <section id="devoluciones" class="mb-5">
-                <h2 class="border-bottom pb-2">Devoluciones</h2>
-                
-                <div id="devoluciones-proceso" class="mb-4">
-                    <h3>Proceso de devolución</h3>
-                    <ol>
-                        <li>Inicia la devolución desde tu cuenta</li>
-                        <li>Selecciona el motivo de la devolución</li>
-                        <li>Imprime la etiqueta de devolución</li>
-                        <li>Empaca el producto en su embalaje original</li>
-                        <li>Envía el paquete</li>
-                    </ol>
-                </div>
-
-                <div id="devoluciones-plazo" class="mb-4">
-                    <h3>Plazos</h3>
-                    <ul>
-                        <li>10 días desde la recepción del producto</li>
-                        <li>30 días para productos defectuosos</li>
-                        <li>Producto debe estar sin uso y con etiquetas</li>
-                    </ul>
-                </div>
-
-                <div id="devoluciones-reembolso" class="mb-4">
-                    <h3>Reembolsos</h3>
-                    <ul>
-                        <li>Mismo método de pago original</li>
-                        <li>Plazo: 5-10 días hábiles</li>
-                        <li>Notificación por email al procesar</li>
-                    </ul>
-                </div>
-            </section>
-        </div>
-    </div>
-
-    <!-- Contacto directo -->
-    <div class="row mt-5">
-        <div class="col-lg-8 mx-auto">
-            <div class="card bg-light">
-                <div class="card-body text-center p-4">
-                    <h3>¿No encontraste lo que buscabas?</h3>
-                    <p class="mb-4">Contáctanos directamente</p>
-                    <div class="row justify-content-center">
-                        <div class="col-md-4 mb-3">
-                            <i class="bi bi-envelope-fill text-primary fs-4"></i>
-                            <p class="mb-0">ayuda@stocksmart.cl</p>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <i class="bi bi-telephone-fill text-primary fs-4"></i>
-                            <p class="mb-0">+56 9 1234 5678</p>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <i class="bi bi-chat-fill text-primary fs-4"></i>
-                            <p class="mb-0">Chat en línea</p>
-                        </div>
+    <!-- Contacto -->
+    <div class="contact-section mt-5">
+        <h2 class="mb-4">¿Necesitas más ayuda?</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-chat"></i> Chat en vivo</h5>
+                        <p class="card-text">Chatea con nuestro equipo de soporte en tiempo real.</p>
                     </div>
                 </div>
             </div>

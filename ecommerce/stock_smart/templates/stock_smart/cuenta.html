@@ -1,0 +1,171 @@
+{% extends 'stock_smart/base.html' %}
+
+{% block title %}Mi Cuenta - Stock Smart{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-person-circle" style="font-size: 4rem;"></i>
+                    </div>
+                    <h5 class="card-title">{{ user.get_full_name|default:user.username }}</h5>
+                    <p class="text-muted">{{ user.email }}</p>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="#perfil" class="list-group-item list-group-item-action active" data-bs-toggle="list">
+                        <i class="bi bi-person"></i> Mi Perfil
+                    </a>
+                    <a href="#pedidos" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                        <i class="bi bi-box"></i> Mis Pedidos
+                    </a>
+                    <a href="#direcciones" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                        <i class="bi bi-geo-alt"></i> Direcciones
+                    </a>
+                    <a href="#favoritos" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                        <i class="bi bi-heart"></i> Favoritos
+                    </a>
+                    <a href="#seguridad" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                        <i class="bi bi-shield-lock"></i> Seguridad
+                    </a>
+                    <a href="{% url 'logout' %}" class="list-group-item list-group-item-action text-danger">
+                        <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenido Principal -->
+        <div class="col-md-9">
+            <div class="tab-content">
+                <!-- Perfil -->
+                <div class="tab-pane fade show active" id="perfil">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Información Personal</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" value="{{ user.first_name }}" name="first_name">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Apellido</label>
+                                        <input type="text" class="form-control" value="{{ user.last_name }}" name="last_name">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" value="{{ user.email }}" name="email">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Teléfono</label>
+                                    <input type="tel" class="form-control" value="{{ user.perfilusuario.telefono }}" name="telefono">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pedidos -->
+                <div class="tab-pane fade" id="pedidos">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Mis Pedidos</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info">
+                                No tienes pedidos recientes.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Direcciones -->
+                <div class="tab-pane fade" id="direcciones">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Mis Direcciones</h5>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="bi bi-plus"></i> Agregar Dirección
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info">
+                                No hay direcciones guardadas.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Favoritos -->
+                <div class="tab-pane fade" id="favoritos">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Mis Favoritos</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info">
+                                No tienes productos favoritos.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seguridad -->
+                <div class="tab-pane fade" id="seguridad">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Cambiar Contraseña</h5>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label">Contraseña Actual</label>
+                                    <input type="password" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Nueva Contraseña</label>
+                                    <input type="password" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Confirmar Nueva Contraseña</label>
+                                    <input type="password" class="form-control">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.list-group-item {
+    border-left: none;
+    border-right: none;
+}
+
+.list-group-item i {
+    margin-right: 10px;
+}
+
+.tab-content > .tab-pane {
+    padding: 20px 0;
+}
+</style>
+{% endblock %}

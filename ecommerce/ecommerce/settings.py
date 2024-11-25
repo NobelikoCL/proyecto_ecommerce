@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'stock_smart',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [
@@ -64,7 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'stock_smart.context_processors.categorias_menu',
+                'stock_smart.context_processors.categories_processor',
             ],
         },
     },
@@ -133,8 +134,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'stock_smart.CustomUser'
 
 LOGIN_URL = 'stock_smart:login'
-LOGIN_REDIRECT_URL = 'stock_smart:index'
-LOGOUT_REDIRECT_URL = 'stock_smart:index'
+LOGIN_REDIRECT_URL = 'stock_smart:account'
+LOGOUT_REDIRECT_URL = 'index'
 
 # Configuración de mensajes
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'

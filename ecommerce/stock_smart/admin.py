@@ -1,18 +1,19 @@
 from django.contrib import admin
 from django.db.models import Count
-from .models import Producto, Categoria, Marca, PerfilUsuario, Favorito, Subcategoria
+from django.utils.html import format_html
+from .models import Producto, Categoria, Marca, PerfilUsuario, Favorito, Subcategoria, Category
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'precio', 'stock', 'categoria', 'marca', 'activo')
-    list_filter = ('categoria', 'marca', 'activo')
-    search_fields = ('nombre', 'descripcion')
+    list_display = ['nombre', 'categoria', 'precio', 'precio_oferta', 'destacado', 'super_oferta', 'activo']
+    list_filter = ['categoria', 'destacado', 'super_oferta', 'activo']
+    search_fields = ['nombre', 'descripcion']
+    prepopulated_fields = {'slug': ('nombre',)}
+    list_editable = ['precio', 'precio_oferta', 'destacado', 'super_oferta', 'activo']
 
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'activo')
-    list_filter = ('activo',)
-    search_fields = ('nombre',)
+    list_display = ['nombre', 'activo']
     prepopulated_fields = {'slug': ('nombre',)}
 
 @admin.register(Marca)
@@ -37,6 +38,32 @@ class SubcategoriaAdmin(admin.ModelAdmin):
     list_display = ['nombre', 'categoria', 'activo']
     list_filter = ['activo', 'categoria']
     search_fields = ['nombre']
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['name_with_level', 'parent', 'order', 'is_active', 'product_count', 'image_preview']
+    list_filter = ['is_active', 'parent']
+    search_fields = ['name']
+    prepopulated_fields = {'slug': ('name',)}
+    list_editable = ['order', 'is_active']
+    
+    def name_with_level(self, obj):
+        level = '-- ' * (obj.parent.level if obj.parent else 0)
+        return format_html('{}{}'.format(level, obj.name))
+    name_with_level.short_description = 'Nombre'
+    
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" style="max-height: 50px;"/>', obj.image.url)
+        return '-'
+    image_preview.short_description = 'Vista previa'
+    
+    def product_count(self, obj):
+        count = obj.product_set.count()
+        return format_html('<span style="color: {};">{}</span>', 
+                         'green' if count > 0 else 'red', 
+                         count)
+    product_count.short_description = 'Productos'
 
 # Personalizar el admin
 admin.site.site_header = 'Administración de Stock Smart'

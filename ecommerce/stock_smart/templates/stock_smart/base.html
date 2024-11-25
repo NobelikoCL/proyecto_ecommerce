@@ -1,273 +1,255 @@
 {% load static %}
+{% load custom_filters %}
 
 <!DOCTYPE html>
-<html lang="es" class="h-100">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Stock Smart{% endblock %}</title>
     
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
     
-    <!-- Custom CSS -->
-    <style>
-        .top-banner {
-            background-color: #4000ff;
-            color: white;
-            padding: 5px 0;
-        }
-        
-        .header-main {
-            padding: 15px 0;
-        }
-        
-        .nav-categories {
-            border-bottom: 1px solid #eee;
-            padding: 10px 0;
-        }
-        
-        .promo-banner {
-            background-color: #f8f9fa;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .promo-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .countdown {
-            background-color: #000;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 3px;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .btn-sm {
-            margin-left: 0.5rem;
-        }
-
-        .bi {
-            margin-right: 0.3rem;
-        }
-
-        .navbar-brand {
-            font-size: 1.5rem;
-        }
-
-        .navbar-brand img {
-            transition: transform 0.3s ease;
-        }
-
-        .navbar-brand:hover img {
-            transform: scale(1.05);
-        }
-
-        @media (max-width: 768px) {
-            .navbar-brand {
-                font-size: 1.2rem;
-            }
-            
-            .navbar-brand img {
-                height: 30px;
-            }
-        }
-    </style>
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+    {% csrf_token %}
 </head>
-<body class="d-flex flex-column h-100">
-    <!-- Banner Superior -->
-    <div class="top-banner">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div>ENVÍO GRATIS desde $9.990</div>
-            <div>20% DCTO. DESDE $0 *solo para nuevos usuarios</div>
-        </div>
-    </div>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <!-- Logo y nombre -->
+                <a class="navbar-brand d-flex align-items-center" href="/">
+                    <i class="fas fa-store fa-lg me-2"></i>
+                    <span>Stock Smart</span>
+                </a>
 
-    <!-- Header Principal -->
-    <header class="header-main">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-2">
-                    <a href="/" class="logo">STOCK SMART</a>
-                </div>
-                <div class="col-8">
-                    <form class="d-flex">
-                        <input type="search" class="form-control" placeholder="🔍 Buscar">
-                        <button class="btn btn-dark ms-2">Buscar</button>
+                <!-- Buscador y iconos -->
+                <div class="d-flex align-items-center flex-grow-1 justify-content-end">
+                    <!-- Buscador -->
+                    <form class="d-flex mx-4 flex-grow-1" method="GET" action="{% url 'stock_smart:products' %}">
+                        <input class="form-control me-2" type="search" placeholder="Buscar productos..." name="q">
+                        <button class="btn btn-outline-primary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
                     </form>
+
+                    <!-- Iconos de carrito y perfil -->
+                    <div class="d-flex align-items-center">
+                        <!-- Carrito -->
+                        <div class="position-relative me-3">
+                            <a href="{% url 'stock_smart:cart' %}" class="text-dark">
+                                <i class="fas fa-shopping-cart fa-lg"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="global-cart-count">
+                                    {{ cart_count }}
+                                </span>
+                            </a>
+                        </div>
+
+                        <!-- Perfil -->
+                        <div class="dropdown">
+                            <a href="#" class="text-dark" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle fa-lg"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                {% if user.is_authenticated %}
+                                    <li><a class="dropdown-item" href="#">Mi Perfil</a></li>
+                                    <li><a class="dropdown-item" href="#">Mis Pedidos</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#">Cerrar Sesión</a></li>
+                                {% else %}
+                                    <li><a class="dropdown-item" href="#">Iniciar Sesión</a></li>
+                                    <li><a class="dropdown-item" href="#">Registrarse</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-2">
-                    <div class="d-flex justify-content-end gap-3">
-                        <a href="/cuenta"><i class="bi bi-person"></i></a>
-                        <a href="/carrito"><i class="bi bi-cart"></i></a>
-                        <a href="/favoritos"><i class="bi bi-heart"></i></a>
+            </div>
+        </nav>
+
+        <!-- Barra de categorías -->
+        <div class="categories-bar">
+            <div class="container">
+                <div class="dropdown mega-menu-wrapper">
+                    <button class="btn btn-categories dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bars me-2"></i>Categorías
+                    </button>
+                    <div class="dropdown-menu mega-menu">
+                        <div class="container">
+                            <div class="row">
+                                {% for category in main_categories %}
+                                    <!-- Aquí deberían mostrarse las categorías -->
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Navegación Categorías -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <!-- Logo con ícono y nombre -->
-            <a class="navbar-brand d-flex align-items-center" href="{% url 'stock_smart:index' %}">
-                <i class="bi bi-box-seam text-primary me-2" style="font-size: 1.5rem;"></i>
-                <span class="fw-bold">STOCK SMART</span>
-            </a>
-
-            <!-- Botón hamburguesa para móviles -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <!-- Contenido del navbar -->
-            <div class="collapse navbar-collapse" id="navbarMain">
-                <ul class="navbar-nav me-auto">
-                    <!-- Inicio -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'stock_smart:index' %}">
-                            <i class="bi bi-house-door"></i>
-                        </a>
-                    </li>
-
-                    <!-- Categorías -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarCategorias" role="button" 
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-grid"></i> Categorías
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-large" aria-labelledby="navbarCategorias">
-                            <div class="container">
-                                <div class="row">
-                                    {% for categoria in categorias_menu %}
-                                    <div class="col-md-4 mb-3">
-                                        <h6 class="dropdown-header">{{ categoria.nombre }}</h6>
-                                        {% for subcategoria in categoria.subcategoria_set.all %}
-                                            <li>
-                                                <a class="dropdown-item" href="{% url 'stock_smart:categoria_detalle' categoria.slug %}?subcategoria={{ subcategoria.slug }}">
-                                                    {{ subcategoria.nombre }}
-                                                </a>
-                                            </li>
-                                        {% endfor %}
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <a class="dropdown-item text-primary" href="{% url 'stock_smart:categoria_detalle' categoria.slug %}">
-                                                Ver todo en {{ categoria.nombre }} <i class="bi bi-arrow-right"></i>
-                                            </a>
-                                        </li>
-                                    </div>
-                                    {% if forloop.counter|divisibleby:3 %}
-                                        </div><div class="row">
-                                    {% endif %}
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </ul>
-                    </li>
-
-                    <!-- Ofertas -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'stock_smart:ofertas' %}">
-                            <i class="bi bi-tag"></i> Ofertas
-                        </a>
-                    </li>
-                </ul>
-
-                <!-- Buscador -->
-                <form class="d-flex mx-auto" method="GET" action="{% url 'stock_smart:buscar' %}">
-                    <div class="input-group">
-                        <input class="form-control" type="search" name="q" 
-                               placeholder="Buscar productos..." 
-                               aria-label="Buscar" 
-                               value="{{ request.GET.q }}">
-                        <button class="btn btn-outline-primary" type="submit">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </div>
-                </form>
-
-                <!-- Iconos de usuario y carrito -->
-                <ul class="navbar-nav ms-auto">
-                    <!-- ... tu código existente para el dropdown de usuario ... -->
-                    
-                    <!-- Carrito -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'stock_smart:carrito' %}">
-                            <i class="bi bi-cart3"></i>
-                            {% if cart_count %}
-                                <span class="badge bg-primary rounded-pill">{{ cart_count }}</span>
-                            {% endif %}
-                        </a>
-                    </li>
-                </ul>
-            </div>
+    <!-- Mensajes -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
         </div>
-    </nav>
+    {% endif %}
 
-    <!-- Banners Promocionales -->
-    <div class="promo-banner">
-        <div class="container">
-            <div class="row">
-                <div class="col-3 promo-item">
-                    <i class="bi bi-box"></i>
-                    <span>Centro de Prueba Gratuita</span>
-                </div>
-                <div class="col-3 promo-item">
-                    <i class="bi bi-phone"></i>
-                    <span>15% Dcto. Solo En App</span>
-                </div>
-                <div class="col-3 promo-item">
-                    <i class="bi bi-arrow-return-left"></i>
-                    <span>DEVOLUCIÓN GRATIS</span>
-                </div>
-                <div class="col-3 promo-item">
-                    <i class="bi bi-whatsapp"></i>
-                    <span>Suscríbete en WhatsApp</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Contenido Principal -->
-    <main class="flex-shrink-0">
+    <!-- Contenido principal -->
+    <main>
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    {% include 'stock_smart/includes/footer.html' %}
+    <footer class="footer mt-auto py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <h5>Sobre Nosotros</h5>
+                    <p>Tu tienda de tecnología de confianza</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Enlaces Útiles</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'stock_smart:about' %}">Quiénes Somos</a></li>
+                        <li><a href="{% url 'stock_smart:contact' %}">Contacto</a></li>
+                        <li><a href="{% url 'stock_smart:terms' %}">Términos y Condiciones</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Ayuda</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'stock_smart:tracking' %}">Seguimiento de Pedido</a></li>
+                        <li><a href="{% url 'stock_smart:help' %}">Centro de Ayuda</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Síguenos</h5>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-    <!-- Scripts -->
+    <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
     <script>
-        // Contador de 24 horas
-        function updateCountdown() {
-            const now = new Date();
-            const end = new Date();
-            end.setHours(23, 59, 59, 999);
-            
-            const diff = end - now;
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
-            document.querySelectorAll('.countdown').forEach(el => {
-                el.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            });
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
         }
+        return cookieValue;
+    }
+
+    function addToCart(productId) {
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
+        fetch('/api/cart/add/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({
+                'product_id': productId
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Actualizar el contador global del carrito
+                const globalCartCount = document.getElementById('global-cart-count');
+                if (globalCartCount) {
+                    globalCartCount.textContent = data.total_items;
+                }
+                
+                // Mostrar mensaje de éxito
+                showToast('Producto añadido al carrito', 'success');
+            } else {
+                showToast(data.error || 'Error al añadir el producto', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Error al añadir el producto', 'error');
+        });
+    }
+
+    function showToast(message, type = 'success') {
+        // Crear el toast
+        const toast = document.createElement('div');
+        toast.className = `toast position-fixed bottom-0 end-0 m-3 ${type === 'success' ? 'bg-success' : 'bg-danger'} text-white`;
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        
+        toast.innerHTML = `
+            <div class="toast-body">
+                ${message}
+            </div>
+        `;
+        
+        // Agregar el toast al documento
+        document.body.appendChild(toast);
+        
+        // Mostrar el toast
+        const bsToast = new bootstrap.Toast(toast, {
+            autohide: true,
+            delay: 3000
+        });
+        bsToast.show();
+        
+        // Eliminar el toast después de ocultarse
+        toast.addEventListener('hidden.bs.toast', function () {
+            document.body.removeChild(toast);
+        });
+    }
     </script>
+    <style>
+    .navbar-brand {
+        font-size: 1.5rem;
+        font-weight: 500;
+    }
+
+    .navbar-brand i {
+        color: #0d6efd;  /* Color primario de Bootstrap */
+    }
+
+    .navbar-brand:hover i {
+        transform: scale(1.1);
+        transition: transform 0.2s ease;
+    }
+    </style>
 </body>
 </html>

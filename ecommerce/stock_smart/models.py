@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser, User
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
 from django.core.validators import MinValueValidator
@@ -6,87 +6,39 @@ from django.utils.text import slugify
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from unidecode import unidecode
+from decimal import Decimal
 
 class CustomUser(AbstractUser):
-    CLIENTE = 'cliente'
-    VENDEDOR = 'vendedor'
-    ADMIN = 'admin'
+    email = models.EmailField(unique=True)
+    rut = models.CharField(max_length=12, blank=True, null=True)
+    phone = models.CharField(max_length=15, blank=True, null=True)
+    shipping_address = models.TextField(blank=True, null=True)
     
-    TIPO_USUARIO_CHOICES = [
-        (CLIENTE, 'Cliente'),
-        (VENDEDOR, 'Vendedor'),
-        (ADMIN, 'Administrador'),
-    ]
+    # Campos para verificación de email
+    email_verified = models.BooleanField(default=False)
+    verification_token = models.CharField(max_length=100, blank=True, null=True)
+    
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
-    email = models.EmailField(
-        unique=True,
-        verbose_name='Correo electrónico'
-    )
-    telefono = models.CharField(
-        max_length=15,
-        verbose_name='Teléfono'
-    )
-    tipo_usuario = models.CharField(
-        max_length=10,
-        choices=TIPO_USUARIO_CHOICES,
-        default=CLIENTE,
-        verbose_name='Tipo de usuario'
-    )
-    fecha_registro = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Fecha de registro'
-    )
-    direccion = models.TextField(
+    # Agregar related_name para evitar conflictos
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='custom_user_set',
         blank=True,
-        null=True,
-        verbose_name='Dirección'
+        verbose_name='groups',
+        help_text='The groups this user belongs to.'
     )
-    ciudad = models.CharField(
-        max_length=100,
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='custom_user_set',
         blank=True,
-        null=True,
-        verbose_name='Ciudad'
+        verbose_name='user permissions',
+        help_text='Specific permissions for this user.'
     )
-    pais = models.CharField(
-        max_length=100,
-        blank=True,
-        null=True,
-        verbose_name='País'
-    )
-    nombre_tienda = models.CharField(
-        max_length=100,
-        blank=True,
-        null=True,
-        verbose_name='Nombre de la tienda'
-    )
-    descripcion_tienda = models.TextField(
-        blank=True,
-        null=True,
-        verbose_name='Descripción de la tienda'
-    )
-
-    class Meta:
-        verbose_name = 'Usuario'
-        verbose_name_plural = 'Usuarios'
-        ordering = ['-fecha_registro']
 
     def __str__(self):
-        return f"{self.email} - {self.get_tipo_usuario_display()}"
-
-    def is_vendedor(self):
-        return self.tipo_usuario == self.VENDEDOR
-
-    def is_cliente(self):
-        return self.tipo_usuario == self.CLIENTE
-
-    def get_direccion_completa(self):
-        partes = [self.direccion, self.ciudad, self.pais]
-        return ', '.join(filter(None, partes))
-
-    def save(self, *args, **kwargs):
-        if not self.username:
-            self.username = self.email
-        super().save(*args, **kwargs)
+        return self.email
 
 class Pedido(models.Model):
     ESTADO_CHOICES = [
@@ -320,100 +272,52 @@ class Marca(models.Model):
         super().save(*args, **kwargs)
 
 class Producto(models.Model):
-    ESTADO_CHOICES = [
-        ('ACTIVO', 'Activo'),
-        ('INACTIVO', 'Inactivo'),
-        ('AGOTADO', 'Agotado')
-    ]
-
-    nombre = models.CharField(
-        max_length=200,
-        verbose_name='Nombre del producto'
-    )
-    descripcion = models.TextField(
-        verbose_name='Descripción'
-    )
-    precio = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        validators=[MinValueValidator(0)],
-        verbose_name='Precio'
-    )
-    imagen = models.ImageField(
-        upload_to='productos/',
-        verbose_name='Imagen'
-    )
+    nombre = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True, blank=True, null=True)
+    descripcion = models.TextField()
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    precio_oferta = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
     categoria = models.ForeignKey(
-        Categoria,
-        on_delete=models.SET_NULL,
-        related_name='productos',
-        null=True,
-        blank=True
-    )
-    stock = models.IntegerField(
-        default=0,
-        validators=[MinValueValidator(0)],
-        verbose_name='Stock disponible'
-    )
-    estado = models.CharField(
-        max_length=10,
-        choices=ESTADO_CHOICES,
-        default='ACTIVO',
-        verbose_name='Estado'
-    )
-    vendedor = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        Categoria, 
         on_delete=models.SET_NULL,
         null=True,
-        blank=True
-    )
-    fecha_creacion = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Fecha de creación'
-    )
-    ultima_modificacion = models.DateTimeField(
-        auto_now=True,
-        verbose_name='Última modificación'
-    )
-    sku = models.CharField(
-        max_length=50,
-        unique=True,
-        verbose_name='SKU'
-    )
-    destacado = models.BooleanField(
-        default=False,
-        verbose_name='Producto destacado'
-    )
-    peso = models.DecimalField(
-        max_digits=6,
-        decimal_places=2,
-        default=0,
-        verbose_name='Peso (kg)'
-    )
-    marca = models.ForeignKey(
-        Marca,
-        on_delete=models.SET_NULL,
-        verbose_name='Marca',
-        related_name='productos_marca',
-        null=True
+        blank=True,
+        related_name='productos'
     )
     activo = models.BooleanField(default=True)
-    precio_oferta = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    destacado = models.BooleanField(default=False)
+    super_oferta = models.BooleanField(default=False)
+    stock = models.PositiveIntegerField(default=0)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    featured = models.BooleanField(default=False, verbose_name="Destacado")
+    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name="Porcentaje de descuento")
 
-    class Meta:
-        verbose_name = 'Producto'
-        verbose_name_plural = 'Productos'
-        ordering = ['-fecha_creacion']
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.nombre)
+            slug = base_slug
+            n = 1
+            # Mientras exista un producto con el mismo slug, agregar un número al final
+            while Producto.objects.filter(slug=slug).exists():
+                slug = f'{base_slug}-{n}'
+                n += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.nombre
 
-    def actualizar_estado(self):
-        if self.stock <= 0:
-            self.estado = 'AGOTADO'
-        elif self.estado == 'AGOTADO' and self.stock > 0:
-            self.estado = 'ACTIVO'
-        self.save()
+    class Meta:
+        ordering = ['-fecha_creacion']
+
+    def get_discount_amount(self):
+        """Calcula el monto del descuento"""
+        return int((self.price * self.discount_percentage) / 100)
+
+    def get_final_price(self):
+        """Calcula el precio final después del descuento"""
+        return self.price - self.get_discount_amount()
 
 class Subcategoria(models.Model):
     nombre = models.CharField(max_length=200)
@@ -467,3 +371,113 @@ class PerfilUsuario(models.Model):
     
     def __str__(self):
         return f"Perfil de {self.usuario.username}"
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    phone = models.CharField(max_length=15)
+
+    def __str__(self):
+        return f'Perfil de {self.user.username}'
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Nombre")
+    slug = models.SlugField(unique=True, blank=True)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, 
+                             related_name='children', verbose_name="Categoría padre")
+    image = models.ImageField(upload_to='categories/', null=True, blank=True, 
+                            verbose_name="Imagen")
+    order = models.IntegerField(default=0, verbose_name="Orden")
+    is_active = models.BooleanField(default=True, verbose_name="Activa")
+    created_at = models.DateTimeField(default=timezone.now, verbose_name="Fecha de creación")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Última actualización")
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+    
+    @property
+    def has_products(self):
+        return self.product_set.exists() or any(child.product_set.exists() for child in self.children.all())
+    
+    def __str__(self):
+        if self.parent:
+            return f"{self.parent.name} > {self.name}"
+        return self.name
+    
+    class Meta:
+        verbose_name = "Categoría"
+        verbose_name_plural = "Categorías"
+        ordering = ['order', 'name']
+
+class Product(models.Model):
+    name = models.CharField(max_length=200, verbose_name="Nombre")
+    slug = models.SlugField(unique=True)
+    description = models.TextField(verbose_name="Descripción")
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Precio")
+    discount_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=0, verbose_name="Porcentaje de descuento")
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, verbose_name="Categoría")
+    stock = models.IntegerField(default=0, verbose_name="Stock")
+    image = models.ImageField(upload_to='products/', null=True, blank=True, verbose_name="Imagen")
+    featured = models.BooleanField(default=False, verbose_name="Destacado")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Producto"
+        verbose_name_plural = "Productos"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.name
+
+    def get_discount_amount(self):
+        """Calcula el monto del descuento"""
+        return int((self.price * self.discount_percentage) / 100)
+
+    def get_final_price(self):
+        """Calcula el precio final después del descuento"""
+        return self.price - self.get_discount_amount()
+
+    @property
+    def has_discount(self):
+        return self.discount_percentage > 0
+
+    def get_discount_amount(self):
+        """Calcula el monto del descuento"""
+        if self.discount_percentage > 0:
+            return (self.price * self.discount_percentage) / 100
+        return 0
+
+class Cart(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def get_total_items(self):
+        return sum(item.quantity for item in self.cartitem_set.all())
+
+    def get_total_price(self):
+        return sum(item.get_subtotal() for item in self.cartitem_set.all())
+
+    def __str__(self):
+        return f"Carrito de {self.user.username}"
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def get_subtotal(self):
+        return self.product.get_final_price() * self.quantity
+
+    def __str__(self):
+        return f"{self.quantity}x {self.product.name} en carrito de {self.cart.user.username}"
+
+    class Meta:
+        unique_together = ('cart', 'product')

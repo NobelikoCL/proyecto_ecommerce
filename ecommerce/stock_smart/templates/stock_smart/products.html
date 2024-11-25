@@ -1,0 +1,95 @@
+{% extends 'stock_smart/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Productos</h2>
+    
+    <!-- Filtros y ordenamiento -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form class="d-flex" method="GET">
+                <input class="form-control me-2" type="search" placeholder="Buscar productos..." name="q" value="{{ request.GET.q }}">
+                <button class="btn btn-outline-primary" type="submit">Buscar</button>
+            </form>
+        </div>
+        <div class="col-md-6 text-end">
+            <select class="form-select d-inline-block w-auto" name="order" onchange="this.form.submit()">
+                <option value="">Ordenar por...</option>
+                <option value="price_asc">Precio: Menor a Mayor</option>
+                <option value="price_desc">Precio: Mayor a Menor</option>
+                <option value="name">Nombre</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Lista de productos -->
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <div class="price-container mb-3">
+                        {% if product.discount_percentage > 0 %}
+                            <span class="original-price">${{ product.price|floatformat:0|intcomma }}</span>
+                            <span class="final-price">${{ product.get_final_price|floatformat:0|intcomma }}</span>
+                        {% else %}
+                            <span class="final-price">${{ product.price|floatformat:0|intcomma }}</span>
+                        {% endif %}
+                    </div>
+                    <p class="card-text">{{ product.description|truncatechars:100 }}</p>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary btn-sm add-to-cart" 
+                                data-product-id="{{ product.id }}"
+                                onclick="addToCart({{ product.id }})">
+                            <i class="fas fa-cart-plus"></i> 
+                            Añadir al carrito
+                        </button>
+                        <a href="{% url 'stock_smart:checkout' product.id %}" class="btn btn-success btn-sm">
+                            <i class="fas fa-shopping-bag"></i> Comprar ahora
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center text-muted">No se encontraron productos.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Paginación -->
+    {% if products.has_other_pages %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if products.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ products.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in products.paginator.page_range %}
+            <li class="page-item {% if products.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+
+            {% if products.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ products.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

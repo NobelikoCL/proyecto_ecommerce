@@ -1,6 +1,11 @@
-from .models import Categoria
+from .models import Category
 
-def categorias_menu(request):
-    """Context processor para tener las categorías disponibles en todos los templates"""
-    categorias = Categoria.objects.filter(activo=True).prefetch_related('subcategoria_set')
-    return {'categorias_menu': categorias}
+def categories_processor(request):
+    main_categories = Category.objects.filter(
+        parent__isnull=True,
+        is_active=True
+    ).prefetch_related('children')
+    
+    return {
+        'main_categories': main_categories
+    }
